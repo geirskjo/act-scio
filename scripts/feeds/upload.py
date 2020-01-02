@@ -70,7 +70,7 @@ class CandidateFile(object):
 
         # Some file endings we need to upload no matter what (typicaly files
         # that is text type files.
-        uploadable_file_endings = [".xml", ".csv", ".html"]
+        uploadable_file_endings = [".xml", ".csv", ".html", ".txt", ".json"]
         for file_ending in uploadable_file_endings:
             if file_ending in self.filename:
                 return True
@@ -258,9 +258,10 @@ def main(args):
             if candidate.uploadable():
                 with open(candidate.filename, "rb") as file_h:
                     post_data = to_scio_submit_post_data(file_h, candidate.filename)
+                    my_metadata.update(post_data)
                     session = requests.Session()
                     session.trust_env = False
-                    session.post(args.scio, json=post_data)
+                    session.post(args.scio, json=my_metadata)
             else:
                 LOGGER.info("Not uploading %s (wrong mimetype)", candidate.filename) # NOQA
 
